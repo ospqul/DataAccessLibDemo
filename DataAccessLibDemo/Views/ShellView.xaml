@@ -23,10 +23,29 @@
         <!-- Open File -->
         <WrapPanel Grid.Row="1" Grid.Column="1" Margin="10">
             <Label Content="FilePath"/>
-            <TextBox x:Name="FilePath" Width="300"/>
+            <TextBox x:Name="FilePath" Width="700"/>
             <Button x:Name="OpenFile" Content="Open" Width="50"
                     Margin="5,0"/>
         </WrapPanel>
+        
+        <!-- Settings and Information -->
+        <StackPanel Grid.Row="2" Grid.Column="1" Margin="10">
+
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Channel"/>
+                    <ComboBox x:Name="ChannelList" Width="200"
+                              SelectedIndex="{Binding SelectedChannelIndex}"/>
+                </StackPanel>
+                <Border BorderThickness="1" BorderBrush="Black"
+                        Margin="5" Height="200">
+                    <ScrollViewer>
+                        <TextBlock x:Name="ChannelInfo"/>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+            
+        </StackPanel>
         
     </Grid>
 </Window>
