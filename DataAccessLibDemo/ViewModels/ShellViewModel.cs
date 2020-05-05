@@ -25,13 +25,14 @@ namespace DataAccessLibDemo.ViewModels
 
             GetChannels();
             GetBeams();
+            GetGates();
+            GetDataGroups();
         }
 
         public void Dispose()
         {
             dataFile.CloseFile();
         }
-
 
         private string _filePath;
 
@@ -191,6 +192,175 @@ namespace DataAccessLibDemo.ViewModels
             {
                 _beamInfo = value;
                 NotifyOfPropertyChange(() => BeamInfo);
+            }
+        }
+
+        #endregion
+
+        #region Gate Info
+
+        public void GetGates()
+        {
+            var gates = dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .Beams[SelectedBeamIndex + 1]
+                .Gates;
+
+            for (int i = 1; i <= gates.Count; i++)
+            {
+                var gate = gates[i];
+                GateList.Add(gate.Name);
+            }
+
+            // set first gate by default
+            SelectedGateIndex = 0;
+
+            // Beam index starts from 1
+            GetGateInfo(SelectedGateIndex + 1);
+        }
+
+        public void GetGateInfo(int index)
+        {
+            var gate = dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .Beams[SelectedBeamIndex + 1]
+                .Gates[index];
+
+            GateInfo = "";
+
+            GateInfo += $"[Name]: { gate.Name }" + Environment.NewLine;
+            GateInfo += $"[Type]: { gate.Type }" + Environment.NewLine;
+            GateInfo += $"[Start]: { gate.Start }" + Environment.NewLine;
+            GateInfo += $"[Width]: { gate.Width }" + Environment.NewLine;
+            GateInfo += $"[Level]: { gate.Level }" + Environment.NewLine;
+            GateInfo += $"[Peak Selection]: { gate.PeakSelection }" + Environment.NewLine;
+            GateInfo += $"[Rectification]: { gate.Rectification }" + Environment.NewLine;
+            GateInfo += $"[Reference Amplitude]: { gate.ReferenceAmplitude }" + Environment.NewLine;
+        }
+
+        private int _selectedGateIndex;
+
+        public int SelectedGateIndex
+        {
+            get { return _selectedGateIndex; }
+            set
+            {
+                _selectedGateIndex = value;
+                NotifyOfPropertyChange(() => SelectedGateIndex);
+                if (dataFile != null)
+                {
+                    GetGateInfo(_selectedGateIndex + 1); // gate index starts from 1
+                }
+            }
+        }
+
+        private BindableCollection<string> _gateList = new BindableCollection<string>();
+
+        public BindableCollection<string> GateList
+        {
+            get { return _gateList; }
+            set { _gateList = value; }
+        }
+
+
+        private string _gateInfo;
+
+        public string GateInfo
+        {
+            get { return _gateInfo; }
+            set
+            {
+                _gateInfo = value;
+                NotifyOfPropertyChange(() => GateInfo);
+            }
+        }
+
+        #endregion
+
+        #region DataGroup Info
+
+        public void GetDataGroups()
+        {
+            var dataGroups = dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .Beams[SelectedBeamIndex + 1]
+                .Gates[SelectedGateIndex + 1]
+                .DataGroups;
+
+            for (int i = 1; i <= dataGroups.Count; i++)
+            {
+                var dataGroup = dataGroups[i];
+                DataGroupList.Add(dataGroup.Name);
+            }
+
+            // set first data group by default
+            SelectedDataGroupIndex = 0;
+
+            // Beam index starts from 1
+            GetDataGroupInfo(SelectedDataGroupIndex + 1);
+        }
+
+        public void GetDataGroupInfo(int index)
+        {
+            var dataGroup = dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .Beams[SelectedBeamIndex + 1]
+                .Gates[SelectedGateIndex + 1]
+                .DataGroups[index];
+
+            DataGroupInfo = "";
+
+            DataGroupInfo += $"[Name]: { dataGroup.Name }" + Environment.NewLine;
+            DataGroupInfo += $"[Type]: { dataGroup.Type }" + Environment.NewLine;
+            DataGroupInfo += $"[DataGroupMode]: { dataGroup.DataGroupMode }" + Environment.NewLine;
+            DataGroupInfo += $"[DataOffset]: { dataGroup.DataOffset }" + Environment.NewLine;
+            DataGroupInfo += $"[DataRectification]: { dataGroup.DataRectification }" + Environment.NewLine;
+            DataGroupInfo += $"[DataResolution]: { dataGroup.DataResolution }" + Environment.NewLine;
+            DataGroupInfo += $"[IndexQuantity]: { dataGroup.IndexQuantity }" + Environment.NewLine;
+            DataGroupInfo += $"[IndexResolution]: { dataGroup.IndexResolution }" + Environment.NewLine;
+            DataGroupInfo += $"[IndexUnit]: { dataGroup.IndexUnit }" + Environment.NewLine;
+            DataGroupInfo += $"[ScanQuantity]: { dataGroup.ScanQuantity }" + Environment.NewLine;
+            DataGroupInfo += $"[ScanResolution]: { dataGroup.ScanResolution }" + Environment.NewLine;
+            DataGroupInfo += $"[ScanUnit]: { dataGroup.ScanUnit }" + Environment.NewLine;
+            DataGroupInfo += $"[SampleQuantity]: { dataGroup.SampleQuantity }" + Environment.NewLine;
+            DataGroupInfo += $"[SampleResolution]: { dataGroup.SampleResolution }" + Environment.NewLine;
+            DataGroupInfo += $"[SampleUnit]: { dataGroup.SampleUnit }" + Environment.NewLine;
+        }
+
+        private int _selectedDataGroupIndex;
+
+        public int SelectedDataGroupIndex
+        {
+            get { return _selectedDataGroupIndex; }
+            set
+            {
+                _selectedDataGroupIndex = value;
+                NotifyOfPropertyChange(() => SelectedDataGroupIndex);
+                if (dataFile != null)
+                {
+                    GetDataGroupInfo(_selectedDataGroupIndex + 1); // DataGroup index starts from 1
+                }
+            }
+        }
+
+        private BindableCollection<string> _dataGroupList = new BindableCollection<string>();
+
+        public BindableCollection<string> DataGroupList
+        {
+            get { return _dataGroupList; }
+            set { _dataGroupList = value; }
+        }
+
+
+        private string _dataGroupInfo;
+
+        public string DataGroupInfo
+        {
+            get { return _dataGroupInfo; }
+            set
+            {
+                _dataGroupInfo = value;
+                NotifyOfPropertyChange(() => DataGroupInfo);
             }
         }
 

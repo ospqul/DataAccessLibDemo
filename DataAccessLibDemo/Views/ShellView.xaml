@@ -39,7 +39,7 @@
                               SelectedIndex="{Binding SelectedChannelIndex}"/>
                 </StackPanel>
                 <Border BorderThickness="1" BorderBrush="Black"
-                        Margin="5" Height="200">
+                        Margin="5" Height="120">
                     <ScrollViewer>
                         <TextBlock x:Name="ChannelInfo"/>
                     </ScrollViewer>
@@ -54,13 +54,43 @@
                               SelectedIndex="{Binding SelectedBeamIndex}"/>
                 </StackPanel>
                 <Border BorderThickness="1" BorderBrush="Black"
-                        Margin="5" Height="200">
+                        Margin="5" Height="120">
                     <ScrollViewer>
                         <TextBlock x:Name="BeamInfo"/>
                     </ScrollViewer>
                 </Border>
             </StackPanel>
 
+            <!-- Gate info -->
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Gate"/>
+                    <ComboBox x:Name="GateList" Width="200"
+                              SelectedIndex="{Binding SelectedGateIndex}"/>
+                </StackPanel>
+                <Border BorderThickness="1" BorderBrush="Black"
+                        Margin="5" Height="120">
+                    <ScrollViewer>
+                        <TextBlock x:Name="GateInfo"/>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+
+            <!-- DataGroup info -->
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="DataGroup"/>
+                    <ComboBox x:Name="DataGroupList" Width="200"
+                              SelectedIndex="{Binding SelectedDataGroupIndex}"/>
+                </StackPanel>
+                <Border BorderThickness="1" BorderBrush="Black"
+                        Margin="5" Height="120">
+                    <ScrollViewer>
+                        <TextBlock x:Name="DataGroupInfo"/>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+            
         </StackPanel>
         
     </Grid>
