@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataAccessLibDemo.Views"
+        xmlns:oxy ="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="ShellView" Height="800" Width="1000">
     <Grid>
@@ -21,7 +22,8 @@
         </Grid.RowDefinitions>
 
         <!-- Open File -->
-        <WrapPanel Grid.Row="1" Grid.Column="1" Margin="10">
+        <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                   Margin="10">
             <Label Content="FilePath"/>
             <TextBox x:Name="FilePath" Width="700"/>
             <Button x:Name="OpenFile" Content="Open" Width="50"
@@ -92,6 +94,24 @@
             </StackPanel>
             
         </StackPanel>
+        
+        <!-- Plotting -->
+        <Grid Grid.Row="2" Grid.Column="2" Margin="10">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Scan"/>
+                    <Slider Minimum="0" Maximum="{Binding ScanQuantity}"
+                            Value="{Binding SelectedScanValue}"
+                            Width="200"/>
+                    <Label Content="Index"/>
+                    <Slider Minimum="0" Maximum="{Binding IndexQuantity}"
+                            Value="{Binding SelectedIndexValue}"
+                            Width="200"/>
+                </StackPanel>
+                <oxy:PlotView Model="{Binding plotModel}" Margin="10"
+                              Height="300"/>
+            </StackPanel>
+        </Grid>
         
     </Grid>
 </Window>

@@ -1,10 +1,14 @@
 ﻿using Caliburn.Micro;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using RDTiffDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DataAccessLibDemo.ViewModels
 {
@@ -12,9 +16,14 @@ namespace DataAccessLibDemo.ViewModels
     {
         public RDTiffDataFile.RDTiffDataFile dataFile { get; set; }
 
+        // ascan plot
+        public PlotModel plotModel { get; set; }
+        public LineSeries lineSeries { get; set; }
+
         public ShellViewModel()
         {
             FilePath = @"C:\Program Files\OlympusNDT\NDT Data Access Library 1.12\Samples\x64\DATA FILE - WELD.opd";
+            InitializeAscanPlotting();
         }
 
         public void OpenFile()
@@ -27,6 +36,7 @@ namespace DataAccessLibDemo.ViewModels
             GetBeams();
             GetGates();
             GetDataGroups();
+            PlotAscan();
         }
 
         public void Dispose()
@@ -95,6 +105,10 @@ namespace DataAccessLibDemo.ViewModels
                 if(dataFile != null)
                 {
                     GetChannelInfo(_selectedChannelIndex + 1); // channel index starts from 1
+                    if (plotModel != null)
+                    {
+                        PlotAscan();
+                    }
                 }
             }
         }
@@ -170,6 +184,10 @@ namespace DataAccessLibDemo.ViewModels
                 if (dataFile != null)
                 {
                     GetBeamInfo(_selectedBeamIndex + 1); // beam index starts from 1
+                    if (plotModel != null)
+                    {
+                        PlotAscan();
+                    }
                 }
             }
         }
@@ -250,6 +268,10 @@ namespace DataAccessLibDemo.ViewModels
                 if (dataFile != null)
                 {
                     GetGateInfo(_selectedGateIndex + 1); // gate index starts from 1
+                    if (plotModel != null)
+                    {
+                        PlotAscan();
+                    }
                 }
             }
         }
@@ -325,6 +347,10 @@ namespace DataAccessLibDemo.ViewModels
             DataGroupInfo += $"[SampleQuantity]: { dataGroup.SampleQuantity }" + Environment.NewLine;
             DataGroupInfo += $"[SampleResolution]: { dataGroup.SampleResolution }" + Environment.NewLine;
             DataGroupInfo += $"[SampleUnit]: { dataGroup.SampleUnit }" + Environment.NewLine;
+
+            // update Scan Quantity and Index Quantity
+            ScanQuantity = dataGroup.ScanQuantity - 1; // starts from 0
+            IndexQuantity = dataGroup.IndexQuantity - 1; 
         }
 
         private int _selectedDataGroupIndex;
@@ -339,6 +365,10 @@ namespace DataAccessLibDemo.ViewModels
                 if (dataFile != null)
                 {
                     GetDataGroupInfo(_selectedDataGroupIndex + 1); // DataGroup index starts from 1
+                    if (plotModel != null)
+                    {
+                        PlotAscan();
+                    }
                 }
             }
         }
@@ -361,6 +391,124 @@ namespace DataAccessLibDemo.ViewModels
             {
                 _dataGroupInfo = value;
                 NotifyOfPropertyChange(() => DataGroupInfo);
+            }
+        }
+
+        #endregion
+
+        #region Ascan Plotting
+
+        private int _selectedScanValue;
+
+        public int SelectedScanValue
+        {
+            get { return _selectedScanValue; }
+            set 
+            {
+                _selectedScanValue = value;
+                NotifyOfPropertyChange(() => SelectedScanValue);
+                if ((plotModel != null) && (dataFile != null))
+                {
+                    PlotAscan();
+                }
+            }
+        }
+
+        private int _selectedIndexValue = 0;
+
+        public int SelectedIndexValue
+        {
+            get { return _selectedIndexValue; }
+            set 
+            {
+                _selectedIndexValue = value;
+                NotifyOfPropertyChange(() => SelectedIndexValue);
+                if ((plotModel != null) && (dataFile != null))
+                {
+                    PlotAscan();
+                }
+            }
+        }
+
+        private int _scanQuantity = 0;
+
+        public int ScanQuantity
+        {
+            get { return _scanQuantity; }
+            set
+            { 
+                _scanQuantity = value;
+                NotifyOfPropertyChange(() => ScanQuantity);
+            }
+        }
+
+        private int _indexQuantity;
+
+        public int IndexQuantity
+        {
+            get { return _indexQuantity; }
+            set 
+            {
+                _indexQuantity = value;
+                NotifyOfPropertyChange(() => IndexQuantity);
+            }
+        }
+
+        public void InitializeAscanPlotting()
+        {
+            plotModel = new PlotModel
+            {
+                Title = "Ascan Plotting",
+            };
+
+            LinearAxis xAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                MajorGridlineStyle = LineStyle.Solid,
+            };
+            plotModel.Axes.Add(xAxis);
+
+            LinearAxis yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                MajorGridlineStyle = LineStyle.Solid,
+            };
+            plotModel.Axes.Add(yAxis);
+
+            lineSeries = new LineSeries
+            {
+                Title = "Ascan Data",
+                Color = OxyColors.Blue,
+                StrokeThickness = 1.5,
+            };
+            plotModel.Series.Add(lineSeries);
+        }
+
+        public void PlotAscan()
+        {
+            try
+            {
+                var ascanData = dataFile
+                    .Channels[SelectedChannelIndex + 1]
+                    .Beams[SelectedBeamIndex + 1]
+                    .Gates[SelectedGateIndex + 1]
+                    .DataGroups[SelectedDataGroupIndex + 1]
+                    .DataAccess
+                    .ReadAscan(SelectedScanValue, SelectedIndexValue);
+
+                lock (plotModel.SyncRoot)
+                {
+                    lineSeries.Points.Clear();
+                    for (int i = 0; i < ascanData.Length; i++)
+                    {
+                        lineSeries.Points.Add(new DataPoint((double)i, (double)ascanData[i]));
+                    }
+                    plotModel.InvalidatePlot(true);
+                }
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 
