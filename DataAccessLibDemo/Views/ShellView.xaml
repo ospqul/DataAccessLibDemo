@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataAccessLibDemo.Views"
         mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="800">
+        Title="ShellView" Height="800" Width="1000">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <!-- Open File -->
+        <WrapPanel Grid.Row="1" Grid.Column="1" Margin="10">
+            <Label Content="FilePath"/>
+            <TextBox x:Name="FilePath" Width="300"/>
+            <Button x:Name="OpenFile" Content="Open" Width="50"
+                    Margin="5,0"/>
+        </WrapPanel>
         
     </Grid>
 </Window>
