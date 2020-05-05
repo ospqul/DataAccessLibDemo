@@ -24,12 +24,28 @@ namespace DataAccessLibDemo.ViewModels
             dataFile.OpenFile(FilePath);
 
             GetChannels();
+            GetBeams();
         }
 
         public void Dispose()
         {
             dataFile.CloseFile();
         }
+
+
+        private string _filePath;
+
+        public string FilePath
+        {
+            get { return _filePath; }
+            set 
+            {
+                _filePath = value;
+                NotifyOfPropertyChange(() => FilePath);
+            }
+        }
+
+        #region Channel Info
 
         public void GetChannels()
         {
@@ -65,20 +81,6 @@ namespace DataAccessLibDemo.ViewModels
             ChannelInfo += $"[Probe Delay]: { channel.PartParameters.ProbeDelay }" + Environment.NewLine;
             ChannelInfo += $"[InspectionType]: { channel.PartParameters.InspectionType }" + Environment.NewLine;
         }
-
-        private string _filePath;
-
-        public string FilePath
-        {
-            get { return _filePath; }
-            set 
-            {
-                _filePath = value;
-                NotifyOfPropertyChange(() => FilePath);
-            }
-        }
-
-        #region Channel Info
 
         private int _selectedChannelIndex;
 
@@ -119,5 +121,79 @@ namespace DataAccessLibDemo.ViewModels
 
         #endregion
 
+        #region Beam Info
+
+        public void GetBeams()
+        {
+            var beams = dataFile.Channels[SelectedChannelIndex + 1].Beams;
+            for (int i = 1; i <= beams.Count; i++)
+            {
+                var beam = beams[i];
+                BeamList.Add(beam.Name);
+            }
+
+            // set first beam by default
+            SelectedBeamIndex = 0;
+
+            // Beam index starts from 1
+            GetBeamInfo(SelectedBeamIndex + 1);
+        }
+
+        public void GetBeamInfo(int index)
+        {
+            var beam = dataFile.Channels[SelectedChannelIndex + 1].Beams[index];
+            BeamInfo = "";
+
+            BeamInfo += $"[Name]: { beam.Name }" + Environment.NewLine;
+            BeamInfo += $"[Angle]: { beam.Angle }" + Environment.NewLine;
+            BeamInfo += $"[Delay]: { beam.Delay }" + Environment.NewLine;
+            BeamInfo += $"[Gain]: { beam.Gain }" + Environment.NewLine;
+            BeamInfo += $"[ReferenceIndexOffset]: { beam.ReferenceIndexOffset }" + Environment.NewLine;
+            BeamInfo += $"[ReferenceScanOffset]: { beam.ReferenceScanOffset }" + Environment.NewLine;
+            BeamInfo += $"[Skew]: { beam.Skew }" + Environment.NewLine;
+            BeamInfo += $"[TotalReferenceIndexOffset]: { beam.TotalReferenceIndexOffset }" + Environment.NewLine;
+            BeamInfo += $"[TotalReferenceScanOffset]: { beam.TotalReferenceScanOffset }" + Environment.NewLine;
+            BeamInfo += $"[TVReferenceIndexOffset]: { beam.TVReferenceIndexOffset }" + Environment.NewLine;
+            BeamInfo += $"[TVReferenceScanOffset]: { beam.TVReferenceScanOffset }" + Environment.NewLine;
+        }
+
+        private int _selectedBeamIndex;
+
+        public int SelectedBeamIndex
+        {
+            get { return _selectedBeamIndex; }
+            set
+            {
+                _selectedBeamIndex = value;
+                NotifyOfPropertyChange(() => SelectedBeamIndex);
+                if (dataFile != null)
+                {
+                    GetBeamInfo(_selectedBeamIndex + 1); // beam index starts from 1
+                }
+            }
+        }
+
+        private BindableCollection<string> _beamList = new BindableCollection<string>();
+
+        public BindableCollection<string> BeamList
+        {
+            get { return _beamList; }
+            set { _beamList = value; }
+        }
+
+
+        private string _beamInfo;
+
+        public string BeamInfo
+        {
+            get { return _beamInfo; }
+            set
+            {
+                _beamInfo = value;
+                NotifyOfPropertyChange(() => BeamInfo);
+            }
+        }
+
+        #endregion
     }
 }

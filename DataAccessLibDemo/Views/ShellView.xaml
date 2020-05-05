@@ -31,6 +31,7 @@
         <!-- Settings and Information -->
         <StackPanel Grid.Row="2" Grid.Column="1" Margin="10">
 
+            <!-- Channel info -->
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Channel"/>
@@ -44,7 +45,22 @@
                     </ScrollViewer>
                 </Border>
             </StackPanel>
-            
+
+            <!-- Beam info -->
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Beam"/>
+                    <ComboBox x:Name="BeamList" Width="200"
+                              SelectedIndex="{Binding SelectedBeamIndex}"/>
+                </StackPanel>
+                <Border BorderThickness="1" BorderBrush="Black"
+                        Margin="5" Height="200">
+                    <ScrollViewer>
+                        <TextBlock x:Name="BeamInfo"/>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+
         </StackPanel>
         
     </Grid>
