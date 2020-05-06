@@ -101,15 +101,21 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Scan"/>
                     <Slider Minimum="0" Maximum="{Binding ScanQuantity}"
-                            Value="{Binding SelectedScanValue}"
+                            Value="{Binding SelectedScanValue, Delay=300}"
                             Width="200"/>
                     <Label Content="Index"/>
                     <Slider Minimum="0" Maximum="{Binding IndexQuantity}"
-                            Value="{Binding SelectedIndexValue}"
+                            Value="{Binding SelectedIndexValue, Delay=300}"
                             Width="200"/>
                 </StackPanel>
+                
+                <!-- Ascan -->
                 <oxy:PlotView Model="{Binding plotModel}" Margin="10"
-                              Height="300"/>
+                              Height="200"/>
+
+                <!-- Sscan -->
+                <oxy:PlotView Model="{Binding plotSscanModel}" Margin="10"
+                              Height="400"/>
             </StackPanel>
         </Grid>
         

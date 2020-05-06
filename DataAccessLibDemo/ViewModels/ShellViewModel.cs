@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataAccessLibDemo.Models;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -20,10 +21,17 @@ namespace DataAccessLibDemo.ViewModels
         public PlotModel plotModel { get; set; }
         public LineSeries lineSeries { get; set; }
 
+        //Sscan plot
+        public SscanModel sscanModel { get; set; }
+        public PlotModel plotSscanModel { get; set; }
+        public double[,] plottingData { get; set; }
+        public HeatMapSeries heatmapSeries { get; set; }
+
         public ShellViewModel()
         {
             FilePath = @"C:\Program Files\OlympusNDT\NDT Data Access Library 1.12\Samples\x64\DATA FILE - WELD.opd";
             InitializeAscanPlotting();
+            InitializeSscan();
         }
 
         public void OpenFile()
@@ -37,6 +45,7 @@ namespace DataAccessLibDemo.ViewModels
             GetGates();
             GetDataGroups();
             PlotAscan();
+            PlotSscan();
         }
 
         public void Dispose()
@@ -108,6 +117,7 @@ namespace DataAccessLibDemo.ViewModels
                     if (plotModel != null)
                     {
                         PlotAscan();
+                        PlotSscan();
                     }
                 }
             }
@@ -187,6 +197,7 @@ namespace DataAccessLibDemo.ViewModels
                     if (plotModel != null)
                     {
                         PlotAscan();
+                        PlotSscan();
                     }
                 }
             }
@@ -271,6 +282,7 @@ namespace DataAccessLibDemo.ViewModels
                     if (plotModel != null)
                     {
                         PlotAscan();
+                        PlotSscan();
                     }
                 }
             }
@@ -368,6 +380,7 @@ namespace DataAccessLibDemo.ViewModels
                     if (plotModel != null)
                     {
                         PlotAscan();
+                        PlotSscan();
                     }
                 }
             }
@@ -410,6 +423,7 @@ namespace DataAccessLibDemo.ViewModels
                 if ((plotModel != null) && (dataFile != null))
                 {
                     PlotAscan();
+                    PlotSscan();
                 }
             }
         }
@@ -426,6 +440,7 @@ namespace DataAccessLibDemo.ViewModels
                 if ((plotModel != null) && (dataFile != null))
                 {
                     PlotAscan();
+                    PlotSscan();
                 }
             }
         }
@@ -513,5 +528,149 @@ namespace DataAccessLibDemo.ViewModels
         }
 
         #endregion
+
+        #region Sscan Plotting
+
+        public void InitSscanModel()
+        {
+            AxisModel xAxis = new AxisModel(-10, 100, 1000);
+            AxisModel yAxis = new AxisModel(1e-3, 100, 1000);
+            sscanModel = new SscanModel(xAxis, yAxis);
+            plottingData = new double[xAxis.Number, yAxis.Number];
+        }
+
+        public void InitializeSscan()
+        {
+            InitSscanModel();
+
+            plotSscanModel = new PlotModel
+            {
+                Title = "Sscan plotting",
+            };
+
+            var axis = new LinearColorAxis
+            {
+                Position = AxisPosition.Right,
+                StartPosition = 0,
+                EndPosition = 1,
+            };
+            plotSscanModel.Axes.Add(axis);
+
+            heatmapSeries = new HeatMapSeries
+            {
+                X0 = sscanModel.XAxis.Min,
+                X1 = sscanModel.XAxis.Max,
+                Y1 = sscanModel.YAxis.Min,
+                Y0 = sscanModel.YAxis.Max,
+                Interpolate = true,
+                RenderMethod = HeatMapRenderMethod.Bitmap,
+                Data = plottingData,
+            };
+            plotSscanModel.Series.Add(heatmapSeries);
+        }
+
+        public double[] GetBeamAngles()
+        {
+            var beams = dataFile
+                    .Channels[SelectedChannelIndex + 1]
+                    .Beams;
+            double[] angles = new double[beams.Count];
+            for (int i=0; i< beams.Count; i++)
+            {
+                angles[i] = beams[i + 1].Angle;
+            }
+
+            return angles;
+        }
+
+        public double GetMaterialVelocity()
+        {
+            return dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .PartParameters
+                .MaterialSoundVelocity;
+        }
+
+        public double GetSampleResolution()
+        {
+            return dataFile
+                .Channels[SelectedChannelIndex + 1]
+                .Beams[SelectedBeamIndex + 1]
+                .Gates[SelectedGateIndex + 1]
+                .DataGroups[SelectedDataGroupIndex + 1]
+                .SampleResolution;
+        }
+
+        public float[][] GetSscanData()
+        {
+            var beams = dataFile
+                    .Channels[SelectedChannelIndex + 1]
+                    .Beams;
+            float[][] data = new float[beams.Count][];
+            for (int i = 0; i < beams.Count; i++)
+            {
+                data[i] = beams[i + 1]
+                    .Gates[SelectedGateIndex + 1]
+                    .DataGroups[SelectedDataGroupIndex + 1]
+                    .DataAccess
+                    .ReadAscan(SelectedScanValue, SelectedIndexValue);
+            }
+
+            return data;
+        }
+
+        public double[,] GetPlottingData()
+        {
+            var points = sscanModel.GetDataPoints();
+            var data = GetSscanData();
+            var angles = GetBeamAngles();
+            var velocity = GetMaterialVelocity();
+            var sampleRes = GetSampleResolution();
+
+            for (int xIndex = 0; xIndex < points.GetLength(0); xIndex++)
+            {
+                for (int yIndex = 0; yIndex < points.GetLength(1); yIndex++)
+                {
+                    var point = points[xIndex, yIndex];
+
+                    double angle = Math.Atan2(point.X, point.Y) * 180 / Math.PI;
+
+                    if ((angle < angles.Min()) || (angle > angles.Max()))
+                    {
+                        plottingData[xIndex, yIndex] = 0;
+                    }
+                    else
+                    {
+                        double radius = Math.Sqrt(point.X * point.X + point.Y * point.Y);
+                        int rawXIndex = (int)Math.Round(angle - angles.Min());
+                        int rawYIndex = (int)Math.Round((radius * 1e-3)/ (velocity * sampleRes));
+
+                        if (rawYIndex >= data[rawXIndex].Length)
+                        {
+                            plottingData[xIndex, yIndex] = 0;
+                        }
+                        else
+                        {
+                            plottingData[xIndex, yIndex] = data[rawXIndex][rawYIndex];
+                        }
+                    }
+                }
+            }
+
+            return plottingData;            
+        }
+
+        public void PlotSscan()
+        {
+            var data = GetPlottingData();
+
+            // refresh plotting
+            heatmapSeries.Data = data;
+            plotSscanModel.InvalidatePlot(true);
+        }
+
+
+        #endregion
+
     }
 }
