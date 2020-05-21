@@ -4,7 +4,7 @@
 
 **Windows Presentation Foundation (WPF)** is a powerful tool to build a GUI application.
 
-Open Visual Studio -> New Project -> Visual c# -> Windows Desktop -> WPF App (.NET Framework) -> Set Solution Name to "FPXDemo" -> OK
+Open Visual Studio -> New Project -> Visual c# -> Windows Desktop -> WPF App (.NET Framework) -> Set Solution Name to "DataAccessLibDemo" -> OK
 
 #### 1.2 MVVM Pattern
 
@@ -31,10 +31,10 @@ Add a new class file `Bootstrapper.cs` under project. This code tells WPF to sta
 ```c#
 # Bootstrapper.cs    
 using Caliburn.Micro;
-using FPXDemo.ViewModels;
+using DataAccessLibDemo.ViewModels;
 using System.Windows;
 
-namespace FPXDemo
+namespace DataAccessLibDemo
 {
     public class Bootstrapper : BootstrapperBase
     {
@@ -49,15 +49,16 @@ namespace FPXDemo
         }
     }
 }
+
 ```
 
 Modify and add Bootstrapper to `App.xaml`.
 
 ```xaml
-<Application x:Class="FPXDemo.App"
+<Application x:Class="DataAccessLibDemo.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:FPXDemo">
+             xmlns:local="clr-namespace:DataAccessLibDemo">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -81,7 +82,7 @@ Setup is completed by now, and you should be able to rebuild and start this proj
 Project folder structure will be similar to this.
 
 ```mathematica
-FPXDemo
+DataAccessLibDemo
    |--> Models
    |--> ViewModels
    |         |--> ShellViewModel.cs
