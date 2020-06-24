@@ -31,3 +31,8 @@ Switched to branch '1_Set_Environment'
 
 2. Expand ***TomoView & SDK*** and download ***NDT Data Access Library***
 3. Double-click .exe file and follow the instruction to install the software.
+
+#### External Nuget Packages
+
+- [Caliburn.Micro](https://github.com/Caliburn-Micro/Caliburn.Micro): A small, yet powerful framework, designed for building applications across all XAML platforms. Its strong support for MV* patterns will enable you to build your solution quickly, without the need to sacrifice code quality or testability.
+- [Oxyplot](https://github.com/oxyplot/oxyplot): A cross-platform plotting library for .NET
