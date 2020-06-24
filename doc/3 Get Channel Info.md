@@ -133,6 +133,8 @@ public void OpenFile()
 }
 ```
 
+![GetChannelInfo](https://raw.githubusercontent.com/ospqul/DataAccessLibDemo/master/resources/GetChannelInfo.PNG?_sm_au_=iVV1JZ5qH4qPWFf6Cq0RGKs1CcqWp)
+
 #### 3.6 Source Code
 
 Run `git checkout 3_Get_channel_info` .

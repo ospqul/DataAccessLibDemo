@@ -133,6 +133,8 @@ public void OpenFile()
 }
 ```
 
+![](https://raw.githubusercontent.com/ospqul/DataAccessLibDemo/master/resources/GetBeamInfo.PNG?_sm_au_=iVV1JZ5qH4qPWFf6Cq0RGKs1CcqWp)
+
 #### 4.6 Source Code
 
 Run `git checkout 4_Get_Beams` .

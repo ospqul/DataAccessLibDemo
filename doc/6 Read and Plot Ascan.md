@@ -203,6 +203,8 @@ public void PlotAscan()
 }
 ```
 
+![](https://raw.githubusercontent.com/ospqul/DataAccessLibDemo/master/resources/PlotAscan.PNG?_sm_au_=iVV1JZ5qH4qPWFf6Cq0RGKs1CcqWp)
+
 #### 6.5 Source Code
 
 Run `git checkout 6_Read_and_Plot_Ascan` to get source code for this section.
