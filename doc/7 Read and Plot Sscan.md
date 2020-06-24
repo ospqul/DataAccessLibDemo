@@ -8,7 +8,7 @@ This tutorial uses [Oxyplot Library](https://github.com/oxyplot/oxyplot) to demo
 
 Here is the `IBeam` class interface from the SDK manual. We are able to get Beam Angle information directly from its `Angle` property.
 
-![IBeamInterface](D:\DataAccessLibDemo\doc\IBeamInterface-1592975204137.png)
+![IBeamInterface](https://raw.githubusercontent.com/ospqul/DataAccessLibDemo/master/resources/IBeamInterface.PNG?_sm_au_=iVV1JZ5qH4qPWFf6Cq0RGKs1CcqWp)
 
 Create a `GetBeamAngles()` method to read beam angles.
 
@@ -294,7 +294,7 @@ public void PlotSscan()
 
 We can test the code with sample data file in `NDT Data Accessl Library` installation folder. The default path is `C:\Program Files\OlympusNDT\NDT Data Access Library 1.12\Samples\x64\DATA FILE - WELD.opd`.
 
-![ExampleOfSscanPlotting](D:\DataAccessLibDemo\doc\ExampleOfSscanPlotting.png)
+![ExampleOfSscanPlotting](https://raw.githubusercontent.com/ospqul/DataAccessLibDemo/master/resources/ExampleOfSscanPlotting.PNG?_sm_au_=iVV1JZ5qH4qPWFf6Cq0RGKs1CcqWp)
 
 #### 7.7 Source Code
 
